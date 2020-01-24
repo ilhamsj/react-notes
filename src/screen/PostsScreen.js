@@ -16,15 +16,13 @@ export default class HomeScreen extends Component {
   }
 
   componentDidMount() {
-    return fetch(
-      `https://jsonplaceholder.typicode.com/posts/${this.props.navigation.state.params.id}`,
-    )
+    return fetch('https://jsonplaceholder.typicode.com/posts')
       .then(response => response.json())
       .then(responseJson => {
         this.setState(
           {
             isLoading: false,
-            dataSource: responseJson,
+            dataSource: responseJson.slice(0, 15),
           },
           function() {},
         );
@@ -45,11 +43,24 @@ export default class HomeScreen extends Component {
 
     return (
       <View style={[styles.container]}>
-        <Text style={[styles.title, styles.mb2]}>
-          {this.state.dataSource.title}
-        </Text>
+        <Text style={[styles.title, styles.mb2]}>Daftar Catatan</Text>
         <ScrollView>
-          <Text>{this.state.dataSource.body}</Text>
+          {this.state.dataSource.map((item, index) => (
+            <TouchableOpacity
+              key={item.id}
+              activeOpacity={4}
+              style={[styles.btnPrimary, styles.p2, styles.mb1]}>
+              <Text
+                onPress={() =>
+                  this.props.navigation.navigate('Details', {
+                    id: item.id,
+                  })
+                }
+                style={styles.textLight}>
+                {item.title}
+              </Text>
+            </TouchableOpacity>
+          ))}
         </ScrollView>
       </View>
     );
